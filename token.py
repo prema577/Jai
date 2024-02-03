@@ -1,41 +1,51 @@
-##FULL CREDIT - TechQaiser
-##Owner's github : https://github.com/techqaiser
-import os,requests,re
-try:
-	from bs4 import BeautifulSoup as bs
-except:
-	os.system('pip install bs4')
-cooke = input(' cookie : ')
-cookie = {'Cookie': cooke}
-xyz = requests.session()
-data = {'access_token': '1348564698517390|007c0a9101b9e1c8ffab727666805038', 'scope': ''}
-req = xyz.post('https://graph.facebook.com/v16.0/device/login/', data=data).json()
-cd = req['code']
-ucd = req['user_code']
-url = 'https://graph.facebook.com/v16.0/device/login_status?method=post&code=%s&access_token=1348564698517390|007c0a9101b9e1c8ffab727666805038' % (
-    cd)
-req = bs(xyz.get('https://mbasic.facebook.com/device', cookies=cookie).content, 'html.parser')
-raq = req.find('form', {'method': 'post'})
-dat = {'jazoest': re.search('name="jazoest" type="hidden" value="(.*?)"', str(raq)).group(1),
-        'fb_dtsg': re.search('name="fb_dtsg" type="hidden" value="(.*?)"', str(req)).group(1), 'qr': '0',
-        'user_code': ucd}
-rel = 'https://mbasic.facebook.com' + raq['action']
-pos = bs(xyz.post(rel, data=dat, cookies=cookie).content, 'html.parser')
-dat = {}
-raq = pos.find('form', {'method': 'post'})
-for x in raq('input', {'value': True}):
-    try:
-        if x['name'] == '__CANCEL__':
-            pass
-        else:
-            dat.update({x['name']: x['value']})
-    except Exception as e:
-        pass
-rel = 'https://mbasic.facebook.com' + raq['action']
-pos = bs(xyz.post(rel, data=dat, cookies=cookie).content, 'html.parser')
-req = xyz.get(url, cookies=cookie).json()
-if 'access_token' in req:
-    print('\033[1;36m Token ' + req['access_token'])
-    exit()
-else:
-    exit('\033[1;31m Invalid COokie Or Something WEnt WRong')
+"""
+echo "Written by Ahmed Ali"
+
+"""
+import requests
+import sys
+import os
+
+class CodeGenerator:
+    def __init__(self):
+        self.white = "\x1b[1;97m"
+        self.green = "\x1b[1;92m"
+        self.reset = "\x1b[0m"
+        self.limit = 54
+
+    def clear_screen(self):
+        if os.name == 'nt':  # For Windows
+            os.system('cls')
+        else:  # For Linux and macOS
+            os.system('clear')
+
+    def divider(self):
+        print(f"{self.white}-" * self.limit)
+
+    def display_header(self):
+        self.divider()
+        print(f"{self.white}Made By Ahmed Ali")
+        print(f"{self.white}Enter 'exit' to exit the tool")
+        self.divider()
+
+    def get_code(self, key):
+        url = f"https://livedeadsegs.pythonanywhere.com/2F?key={key.replace(' ', '')}"
+        response = requests.get(url).text
+        return response
+
+    def run(self):
+        self.clear_screen()
+        self.display_header()
+
+        while True:
+            key = input(f"{self.white}Enter key : ")
+            if key == "exit":
+                sys.exit()
+            else:
+                code = self.get_code(key)
+                print(f"Code : {self.green}{code}{self.reset}")
+                self.divider()
+
+if __name__ == "__main__":
+    generator = CodeGenerator()
+    generator.run()
